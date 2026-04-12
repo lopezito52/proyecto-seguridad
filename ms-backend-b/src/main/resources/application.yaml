@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: ms-backend-b
+server:
+  port: 8444
+  ssl:
+    enabled: true
+    key-store: classpath:certs/backendB.jks
+    key-store-password: BackendB123
+    key-store-type: PKCS12
+    key-alias: backendb          # alias en minúscula exactamente así
+    client-auth: need            # mTLS: EXIGE cert del cliente
+    trust-store: classpath:certs/truststore.jks
+    trust-store-password: Trust123
+    trust-store-type: PKCS12
+
+jwt:
+  public-key-path: classpath:certs/jwt-public.pem
+  issuer: ms-backend-a

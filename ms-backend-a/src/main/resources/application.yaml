@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: ms-backend-a
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: classpath:certs/backendA.jks
+    key-store-password: BackendA123
+    key-store-type: PKCS12
+    key-alias: backenda          # alias en minúscula exactamente así
+    client-auth: none            # TLS simple, no pide cert al cliente
+    trust-store: classpath:certs/truststore.jks
+    trust-store-password: Trust123
+    trust-store-type: PKCS12
+
+jwt:
+  private-key-path: classpath:certs/jwt-private.pem
+  public-key-path: classpath:certs/jwt-public.pem
+  issuer: ms-backend-a
+  expiration-ms: 3600000

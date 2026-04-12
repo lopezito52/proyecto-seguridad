@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: ms-cliente
+server:
+  port: 8085
+
+backend:
+  a:
+    url: https://localhost:8443
+  b:
+    url: https://localhost:8444
+
+client:
+  ssl:
+    trust-store: classpath:certs/truststore.jks
+    trust-store-password: Trust123
+    key-store: classpath:certs/client.jks
+    key-store-password: Cliente123
+    key-alias: client
