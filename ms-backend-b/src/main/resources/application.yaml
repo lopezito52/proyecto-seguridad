@@ -16,4 +16,6 @@ server:
 
 jwt:
   public-key-path: classpath:certs/jwt-public.pem
+  private-key-path: classpath:certs/jwt-private.key
   issuer: ms-backend-a
+  expiration-ms: 86400000  # 24 horas en lugar de 1 hora

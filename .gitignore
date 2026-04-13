@@ -1,0 +1,27 @@
+# Compiled files
+target/
+*.class
+
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+.mvn/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+
+# Maven wrapper (optional - some people commit it)
+# mvnw
+# mvnw.cmd
+# .mvn/

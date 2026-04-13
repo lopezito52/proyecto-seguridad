@@ -1,9 +1,10 @@
 package com.service.ms_backend_a.service;
 
-
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @Service
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class JwtService {
 
     @Value("${jwt.private-key-path}")
@@ -32,7 +34,9 @@ public class JwtService {
 
     @PostConstruct
     public void init() throws Exception {
-        // Cargar llave privada
+        System.out.println(">>> [JwtService] Instancia ID: " + System.identityHashCode(this));
+        System.out.println(">>> [JwtService] Cargando llaves JWT...");
+
         String privPem = new String(privateKeyResource.getInputStream().readAllBytes())
             .replace("-----BEGIN PRIVATE KEY-----", "")
             .replace("-----END PRIVATE KEY-----", "")
@@ -42,8 +46,8 @@ public class JwtService {
         byte[] privBytes = Base64.getDecoder().decode(privPem);
         privateKey = KeyFactory.getInstance("RSA")
             .generatePrivate(new PKCS8EncodedKeySpec(privBytes));
+        System.out.println(">>> [JwtService] Llave privada cargada, hash: " + privateKey.hashCode());
 
-        // Cargar llave pública
         String pubPem = new String(publicKeyResource.getInputStream().readAllBytes())
             .replace("-----BEGIN PUBLIC KEY-----", "")
             .replace("-----END PUBLIC KEY-----", "")
@@ -51,11 +55,12 @@ public class JwtService {
         byte[] pubBytes = Base64.getDecoder().decode(pubPem);
         publicKey = KeyFactory.getInstance("RSA")
             .generatePublic(new X509EncodedKeySpec(pubBytes));
+        System.out.println(">>> [JwtService] Llave publica cargada, hash: " + publicKey.hashCode());
     }
 
-    // Genera un token firmado con la llave privada
     public String generarToken(String usuario, String rol) {
-        return Jwts.builder()
+        System.out.println(">>> [JwtService] Firmando con llave hash: " + privateKey.hashCode());
+        String token = Jwts.builder()
             .setSubject(usuario)
             .claim("role", rol)
             .setIssuer(issuer)
@@ -63,15 +68,24 @@ public class JwtService {
             .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
             .signWith(privateKey, SignatureAlgorithm.RS256)
             .compact();
+        System.out.println(">>> [JwtService] Token generado para: " + usuario);
+        return token;
     }
 
-    // Valida el token y retorna los claims — lanza excepción si es inválido
     public Claims validarToken(String token) {
-        return Jwts.parserBuilder()
+        System.out.println(">>> [JwtService] Validando con llave hash: " + publicKey.hashCode());
+        Claims claims = Jwts.parserBuilder()
             .setSigningKey(publicKey)
             .requireIssuer(issuer)
             .build()
             .parseClaimsJws(token)
             .getBody();
+        System.out.println(">>> [JwtService] Token valido! subject: " + claims.getSubject());
+        System.out.println(">>> [JwtService] role: " + claims.get("role"));
+        return claims;
+    }
+
+    public PrivateKey getPrivateKey() {
+        return privateKey;
     }
 }

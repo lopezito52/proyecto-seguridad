@@ -28,9 +28,9 @@ public class SslConfig {
     @Value("${client.ssl.key-store-password}")
     private String keyStorePassword;
 
-    // Solo TLS: valida el servidor pero NO presenta certificado propio
     @Bean("restTemplateTLS")
     public RestTemplate restTemplateTLS() throws Exception {
+        System.out.println(">>> [SslConfig] Creando RestTemplate TLS (sin cert cliente)...");
         SSLContext ssl = SSLContextBuilder.create()
             .loadTrustMaterial(
                 trustStore.getURL(),
@@ -48,12 +48,13 @@ public class SslConfig {
                         .build())
                 .build());
 
+        System.out.println(">>> [SslConfig] RestTemplate TLS creado OK");
         return new RestTemplate(factory);
     }
 
-    // mTLS: valida el servidor Y presenta su propio certificado
     @Bean("restTemplateMTLS")
     public RestTemplate restTemplateMTLS() throws Exception {
+        System.out.println(">>> [SslConfig] Creando RestTemplate mTLS (con cert cliente)...");
         SSLContext ssl = SSLContextBuilder.create()
             .loadTrustMaterial(
                 trustStore.getURL(),
@@ -75,6 +76,7 @@ public class SslConfig {
                         .build())
                 .build());
 
+        System.out.println(">>> [SslConfig] RestTemplate mTLS creado OK");
         return new RestTemplate(factory);
     }
 }

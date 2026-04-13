@@ -14,26 +14,24 @@ public class ClienteController {
     @Autowired
     private BackendClientService backendClientService;
 
-    // No necesita Authorization — aquí se OBTIENE el token
     @PostMapping("/login")
     public ResponseEntity<Map> login(@RequestBody Map<String, String> body) {
-        Map resultado = backendClientService.obtenerToken(
+        System.out.println(">>> [ClienteController] POST /cliente/login");
+        return backendClientService.obtenerToken(
             body.get("usuario"),
             body.get("password")
         );
-        return ResponseEntity.ok(resultado);
     }
 
-    // Recibe el token como parámetro en la URL para simplificar las pruebas
     @GetMapping("/backend-a")
     public ResponseEntity<Map> consultarBackendA(@RequestParam String token) {
-        Map resultado = backendClientService.consultarBackendA(token);
-        return ResponseEntity.ok(resultado);
+        System.out.println(">>> [ClienteController] GET /cliente/backend-a");
+        return backendClientService.consultarBackendA(token);
     }
 
     @GetMapping("/backend-b")
     public ResponseEntity<Map> consultarBackendB(@RequestParam String token) {
-        Map resultado = backendClientService.consultarBackendB(token);
-        return ResponseEntity.ok(resultado);
+        System.out.println(">>> [ClienteController] GET /cliente/backend-b");
+        return backendClientService.consultarBackendB(token);
     }
 }

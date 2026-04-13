@@ -23,6 +23,7 @@ public class JwtService {
 
     @PostConstruct
     public void init() throws Exception {
+        System.out.println(">>> [JwtService BackendB] Cargando llave publica JWT...");
         String pubPem = new String(publicKeyResource.getInputStream().readAllBytes())
             .replace("-----BEGIN PUBLIC KEY-----", "")
             .replace("-----END PUBLIC KEY-----", "")
@@ -30,15 +31,22 @@ public class JwtService {
         byte[] pubBytes = Base64.getDecoder().decode(pubPem);
         publicKey = KeyFactory.getInstance("RSA")
             .generatePublic(new X509EncodedKeySpec(pubBytes));
+        System.out.println(">>> [JwtService BackendB] Llave publica cargada OK");
     }
 
-    // Backend B solo VERIFICA, nunca emite tokens
     public Claims validarToken(String token) {
-        return Jwts.parserBuilder()
+        System.out.println(">>> [JwtService BackendB] Validando token...");
+        Claims claims = Jwts.parserBuilder()
             .setSigningKey(publicKey)
             .requireIssuer(issuer)
             .build()
             .parseClaimsJws(token)
             .getBody();
+        System.out.println(">>> [JwtService BackendB] Token valido!");
+        System.out.println(">>> [JwtService BackendB] Claims -> subject: " + claims.getSubject());
+        System.out.println(">>> [JwtService BackendB] Claims -> role: " + claims.get("role"));
+        System.out.println(">>> [JwtService BackendB] Claims -> issuer: " + claims.getIssuer());
+        System.out.println(">>> [JwtService BackendB] Claims -> expiration: " + claims.getExpiration());
+        return claims;
     }
 }

@@ -15,7 +15,7 @@ server:
     trust-store-type: PKCS12
 
 jwt:
-  private-key-path: classpath:certs/jwt-private.pem
+  private-key-path: classpath:certs/jwt-private.key
   public-key-path: classpath:certs/jwt-public.pem
   issuer: ms-backend-a
   expiration-ms: 3600000
